@@ -1,8 +1,11 @@
 FROM --platform=linux/amd64 ubuntu:20.04
 
+ENV DEBIAN_FRONTEND noninteractive
+ENV DEBCONF_NONINTERACTIVE_SEEN true
+
 # Update and install required packages
 RUN apt-get -y update && \
-    apt-get install -y wget gnupg software-properties-common && \
+    apt-get install -y wget gnupg software-properties-common libnotify4 && \
     apt install -y python3-pip python3-dev ipython3 && \
     python3 -m pip install ipykernel && \
     python3 -m ipykernel install && \
