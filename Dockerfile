@@ -11,6 +11,13 @@ RUN apt-get -y update && \
     python3 -m ipykernel install && \
     pip3 install pylint
 
+RUN pip uninstall cryptography pyOpenSSL
+RUN pip install cryptography==3.4.6 pyOpenSSL==21.0.0 bob tools torch lightgbm
+
+RUN pip3 install numpy scipy pandas tensorflow matplotlib Keras scikit-learn==1.2.0 Scrapy beautifulsoup4 eli5 Theano pipenv pybrain structure
+# ramp - needs configuration are < python3
+# Unsuccessful -  nupic caffe2
+
 RUN cd /tmp && \
     wget https://az764295.vo.msecnd.net/stable/6ab598523be7a800d7f3eb4d92d7ab9a66069390/code_1.39.2-1571154070_amd64.deb && \
     dpkg -i code_1.39.2-1571154070_amd64.deb && \
