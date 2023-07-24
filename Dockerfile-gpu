@@ -11,10 +11,17 @@ RUN apt-get -y update && \
     python3 -m ipykernel install && \
     pip3 install pylint
 
+# touch, lightgbm need older versions of crytography and pyOpenSSL
+RUN pip uninstall cryptography pyOpenSSL
+RUN pip install cryptography==3.4.6 pyOpenSSL==21.0.0 bob tools
+
 RUN pip3 install numpy scipy pandas matplotlib scikit-learn==1.2.0 Scrapy beautifulsoup4 eli5 pipenv pybrain structure bob chainer
 # Theano - needs numpy <= 1.20.3 (obsolute)
 # ramp - needs configuration are < python3
 # Unsuccessful -  nupic caffe2
+
+# The GPU packages
+RUN  pip install tensorflow torch lightgbm Keras
 
 RUN cd /tmp && \
     wget https://az764295.vo.msecnd.net/stable/6ab598523be7a800d7f3eb4d92d7ab9a66069390/code_1.39.2-1571154070_amd64.deb && \
