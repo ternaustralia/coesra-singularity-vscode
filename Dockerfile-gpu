@@ -21,7 +21,7 @@ RUN pip3 install numpy scipy pandas matplotlib scikit-learn==1.2.0 Scrapy beauti
 # Unsuccessful -  nupic caffe2
 
 # The GPU packages
-RUN  pip install tensorflow torch lightgbm Keras
+RUN  pip install tensorflow torch lightgbm Keras pyodm
 
 RUN cd /tmp && \
     wget https://az764295.vo.msecnd.net/stable/6ab598523be7a800d7f3eb4d92d7ab9a66069390/code_1.39.2-1571154070_amd64.deb && \
