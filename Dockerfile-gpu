@@ -5,28 +5,38 @@ ENV DEBCONF_NONINTERACTIVE_SEEN true
 
 # Update and install required packages
 RUN apt-get -y update && \
-    apt-get install -y wget gnupg software-properties-common libnotify4 && \
-    apt install -y python3-pip python3-dev ipython3 && \
-    python3 -m pip install ipykernel && \
-    python3 -m ipykernel install && \
-    pip3 install pylint
+    apt-get install -y wget gnupg software-properties-common libnotify4 python3-tk && \
+    apt install -y python3-pip python3-dev ipython3
+#    python3 -m pip install ipykernel && \
+#    python3 -m ipykernel install
+
 
 RUN pip3 install --upgrade pip
 
-# torch, lightgbm need older versions of crytography and pyOpenSSL
-#RUN pip uninstall cryptography pyOpenSSL
-#RUN pip install cryptography==3.4.6 pyOpenSSL==21.0.0 bob tools
-#RUN pip install cryptography pyOpenSSL bob tools
+RUN apt update
+RUN apt-get install -y clinfo
 
-RUN pip3 install numpy scipy pandas matplotlib scikit-learn==1.2.0 Scrapy beautifulsoup4 eli5 pipenv structure chainer bob tools
-# pybrain - not compatible with scipy?? It is old and last maintained on 2015.
-# Theano - needs numpy <= 1.20.3 (obsolute)
-# ramp - needs configuration are < python3
-# Unsuccessful -  nupic caffe2
+ENV CONDA_DIR=/opt/conda
+ENV PATH="${CONDA_DIR}/bin:${PATH}"
 
-# The GPU packages
-RUN  pip install tensorflow torch lightgbm Keras pyodm chainer cupy-cuda12x
+# Install mamba forge
+RUN cd /tmp
+RUN wget -O Miniforge3.sh "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+RUN bash Miniforge3.sh -b -p "${CONDA_DIR}"
 
+# Install python packages
+RUN mamba install --yes pylint numpy scipy pandas matplotlib beautifulsoup4 scrapy eli5 pipenv scikit-learn==1.2.0
+RUN pip3 install bob structure
+
+# Install python packages for GPU
+RUN CONDA_OVERRIDE_CUDA="11.8" mamba install --yes pytorch tensorflow
+RUN mamba install --yes Keras chainer
+RUN pip3 install lightgbm pyodm cupy-cuda12x
+
+# setuid bit on conda directories
+# RUN chmod -R +6000 "${CONDA_DIR}"
+
+# Install the vscode
 RUN cd /tmp && \
     wget https://az764295.vo.msecnd.net/stable/6ab598523be7a800d7f3eb4d92d7ab9a66069390/code_1.39.2-1571154070_amd64.deb && \
     dpkg -i code_1.39.2-1571154070_amd64.deb && \
